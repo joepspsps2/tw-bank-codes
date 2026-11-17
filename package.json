@@ -1,6 +1,6 @@
 {
   "name": "@joelincc/tw-bank-codes",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "台灣銀行代碼（3 碼）與分行代碼（4 碼）對照表：代碼查名稱、拆 7 碼分行代碼。資料來自財金資訊公司開放資料，附資料日期。Taiwan bank and branch code lookup with dated open data.",
   "type": "module",
   "exports": {
