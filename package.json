@@ -1,0 +1,55 @@
+{
+  "name": "@joelincc/tw-bank-codes",
+  "version": "0.1.1",
+  "description": "台灣銀行代碼（3 碼）與分行代碼（4 碼）對照表：代碼查名稱、拆 7 碼分行代碼。資料來自財金資訊公司開放資料，附資料日期。Taiwan bank and branch code lookup with dated open data.",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.mts",
+      "default": "./src/index.mjs"
+    },
+    "./banks.json": "./src/banks.json",
+    "./branches.json": "./src/branches.json",
+    "./status.json": "./status.json",
+    "./package.json": "./package.json"
+  },
+  "main": "./src/index.mjs",
+  "types": "./src/index.d.mts",
+  "files": [
+    "src",
+    "status.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs && node .public-gate/clean-scan.mjs",
+    "prepublishOnly": "npm test",
+    "clean-scan": "node .public-gate/clean-scan.mjs"
+  },
+  "keywords": [
+    "taiwan",
+    "bank-code",
+    "branch-code",
+    "swift",
+    "fisc",
+    "銀行代碼",
+    "分行代碼",
+    "金融機構代碼",
+    "匯款",
+    "open-data"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joepspsps2/tw-bank-codes.git"
+  },
+  "homepage": "https://github.com/joepspsps2/tw-bank-codes#readme",
+  "bugs": "https://github.com/joepspsps2/tw-bank-codes/issues",
+  "publishConfig": {
+    "access": "public"
+  }
+}

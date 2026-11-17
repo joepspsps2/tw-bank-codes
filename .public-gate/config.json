@@ -1,0 +1,30 @@
+{
+  "說明": "public-gate 各 repo 設定（本檔各 repo 自己維護，產生器不會覆蓋）。exclude＝不掃的路徑；allow＝確定是假資料的值→原因（鑰匙放行不了）；denyExemptFiles＝擁有者私有端的名單比對要跳過哪些檔（只限著作權署名這類刻意公開的身分，要寫原因；鑰匙與個資照掃）；publicEmails＝可以公開的信箱；extraPatterns＝本 repo 另外要擋的樣式 {name, regex, flags}；sensitivePaths＝外部 PR 動到就等擁有者的路徑（另外內建 .github/、.public-gate/、package.json、lockfile、tsconfig*.json、.npmrc、.nvmrc、.npmignore）。（extraPatterns 三條＝原 scripts/pii-scan.mjs 的 INTERNAL 規則，其餘四條改由通用規則與擁有者私有端的名單比對接手：@joc/、KM#、lab-gsc、tw-kit）",
+  "exclude": [],
+  "allow": {
+    "41898282": "GitHub Actions 機器人的公開使用者編號（monthly.yml 自動 commit 的 noreply 信箱用）",
+    "00400371": "測試用的假代碼：7 碼分行代碼後面多一碼，用來測「長度不對要回 null」（test/bank.test.mjs）"
+  },
+  "denyExemptFiles": {
+    "LICENSE": "著作權人署名＝刻意公開的品牌網域（首次公開時定），不是外洩"
+  },
+  "publicEmails": [],
+  "extraPatterns": [
+    {
+      "name": "私有資料代號（扣繳表）",
+      "regex": "withholding",
+      "flags": "i"
+    },
+    {
+      "name": "私有資料代號（/rates 抽屜）",
+      "regex": "\\/rates\\b",
+      "flags": ""
+    },
+    {
+      "name": "私有網址",
+      "regex": "expense\\.joelin",
+      "flags": "i"
+    }
+  ],
+  "sensitivePaths": []
+}

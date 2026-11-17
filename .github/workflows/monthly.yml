@@ -1,0 +1,52 @@
+# 每月跟財金公司的官方檔比對一次（公開 repo，GitHub Actions 不計費）。只檢查，不寫回 main。
+#
+# 為什麼不寫回 main：main 已上鎖，一律走 PR、必過檢查，沒有任何例外（個人帳號的 repo 不能讓 GitHub Actions 例外）。
+# 做什麼：下載財金公司 R2_Location.csv（data.gov.tw 24323）→ 跟現有的分行表比 → 結果寫在這次執行的摘要。
+#   有變：這次執行標紅（失敗），提醒維護者在本機照 README「怎麼更新」跑更新、開 PR。
+#   沒變：綠燈，摘要寫「無變動」。
+#   被擋（HTTP 403 等）：綠燈，摘要寫「被擋」；不重試、不換身分硬闖。
+# 怎麼知道資料有沒有在更新：看 status.json 的 checkedOn（只有經 PR 合併的更新才會前進），不看這支流程的成敗。
+# 時間：每月 3 日 02:23 UTC（台北 10:23）。漏跑一個月沒關係，下次照樣全量比對。
+name: 每月比對官方資料
+
+on:
+  schedule:
+    - cron: '23 2 3 * *'
+  workflow_dispatch:
+
+concurrency:
+  group: monthly
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: 下載並比對（只在這台臨時機器上，不 commit）
+        run: |
+          set +e
+          python3 scripts/update-bank.py > out.txt 2> err.txt
+          rc=$?
+          set -e
+          cat out.txt; cat err.txt >&2
+          if [ "$rc" = "0" ]; then
+            changed=$(tail -n 1 out.txt | python3 -c 'import json,sys;print(str(json.load(sys.stdin)["changed"]).lower())')
+            if [ "$changed" = "true" ]; then
+              { echo "### 銀行分行表：官方資料有變，要更新"; head -n 1 out.txt; echo; echo "請在本機照 README「怎麼更新」跑更新、開 PR。"; } >> "$GITHUB_STEP_SUMMARY"
+              echo "::error::官方資料有變（$(head -n 1 out.txt)），請在本機跑更新並開 PR"
+              exit 1
+            fi
+            { echo "### 銀行分行表：無變動"; head -n 1 out.txt; } >> "$GITHUB_STEP_SUMMARY"
+          elif [ "$rc" = "3" ]; then
+            { echo "### 銀行分行表：官方網站擋下載"; cat err.txt; } >> "$GITHUB_STEP_SUMMARY"
+          else
+            { echo "### 銀行分行表：資料檢查沒過"; cat err.txt; } >> "$GITHUB_STEP_SUMMARY"
+            exit "$rc"
+          fi

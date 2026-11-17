@@ -1,0 +1,11 @@
+{
+  "checkedOn": "2026-11-12",
+  "dataDate": "2026-11-12",
+  "banks": 296,
+  "branches": 4989,
+  "source": "https://www.fisc.com.tw/TC/OPENDATA/R2_Location.csv",
+  "lastAttempt": {
+    "on": "2026-11-16",
+    "result": "HTTP 403"
+  }
+}
